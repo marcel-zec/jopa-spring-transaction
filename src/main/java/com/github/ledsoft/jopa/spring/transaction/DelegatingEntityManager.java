@@ -7,6 +7,8 @@ import cz.cvut.kbss.jopa.model.descriptors.Descriptor;
 import cz.cvut.kbss.jopa.model.metamodel.Metamodel;
 import cz.cvut.kbss.jopa.model.query.Query;
 import cz.cvut.kbss.jopa.model.query.TypedQuery;
+import cz.cvut.kbss.jopa.model.query.criteria.CriteriaQuery;
+import cz.cvut.kbss.jopa.sessions.CriteriaBuilder;
 import cz.cvut.kbss.jopa.transactions.EntityTransaction;
 import org.springframework.beans.factory.DisposableBean;
 
@@ -21,6 +23,7 @@ public class DelegatingEntityManager implements DisposableBean, EntityManager {
     private final ThreadLocal<JopaTransactionDefinition> localTransaction = new ThreadLocal<>();
 
     private EntityManagerProvider emProvider;
+
 
     @Override
     public void persist(Object o) {
@@ -122,6 +125,11 @@ public class DelegatingEntityManager implements DisposableBean, EntityManager {
     }
 
     @Override
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+        return getTransactionalDelegate().createQuery(criteriaQuery);
+    }
+
+    @Override
     public <T> TypedQuery<T> createQuery(String s, Class<T> aClass) {
         return getTransactionalDelegate().createQuery(s, aClass);
     }
@@ -187,6 +195,11 @@ public class DelegatingEntityManager implements DisposableBean, EntityManager {
     @Override
     public List<URI> getContexts() {
         return getTransactionalDelegate().getContexts();
+    }
+
+    @Override
+    public CriteriaBuilder getCriteriaBuilder() {
+        return getTransactionalDelegate().getCriteriaBuilder();
     }
 
     @Override

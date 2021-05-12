@@ -25,12 +25,26 @@
         <org.junit.jupiter.version>5.7.1</org.junit.jupiter.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
-            <groupId>cz.cvut.kbss.jopa</groupId>
-            <artifactId>jopa-api</artifactId>
-            <version>${cz.cvut.kbss.jopa.version}</version>
+            <groupId>com.github.marcel-zec</groupId>
+            <artifactId>jopa</artifactId>
+            <version>development-SNAPSHOT</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>cz.cvut.kbss.jopa</groupId>-->
+<!--            <artifactId>jopa-api</artifactId>-->
+<!--            <version>${cz.cvut.kbss.jopa.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
