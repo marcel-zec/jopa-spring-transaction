@@ -6,6 +6,8 @@ import cz.cvut.kbss.jopa.model.descriptors.Descriptor;
 import cz.cvut.kbss.jopa.model.metamodel.Metamodel;
 import cz.cvut.kbss.jopa.model.query.Query;
 import cz.cvut.kbss.jopa.model.query.TypedQuery;
+import cz.cvut.kbss.jopa.model.query.criteria.CriteriaQuery;
+import cz.cvut.kbss.jopa.sessions.CriteriaBuilder;
 import cz.cvut.kbss.jopa.transactions.EntityTransaction;
 
 import java.net.URI;
@@ -142,6 +144,12 @@ public class SingleOperationEntityManagerProxy implements EntityManager {
     }
 
     @Override
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+        final TypedQuery<T> instance = delegate.createQuery(criteriaQuery);
+        return new EntityManagerClosingTypedQueryProxy<>(instance, delegate);
+    }
+
+    @Override
     public <T> TypedQuery<T> createQuery(String query, Class<T> resultType) {
         final TypedQuery<T> instance = delegate.createQuery(query, resultType);
         return new EntityManagerClosingTypedQueryProxy<>(instance, delegate);
@@ -218,6 +226,15 @@ public class SingleOperationEntityManagerProxy implements EntityManager {
     public List<URI> getContexts() {
         try {
             return delegate.getContexts();
+        } finally {
+            delegate.close();
+        }
+    }
+
+    @Override
+    public CriteriaBuilder getCriteriaBuilder() {
+        try {
+            return delegate.getCriteriaBuilder();
         } finally {
             delegate.close();
         }
